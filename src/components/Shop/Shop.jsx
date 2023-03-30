@@ -33,7 +33,7 @@ const Shop = () => {
   return (
     <div>
       <h1 className="text-center text-3xl py-12 font-extrabold">
-        Products coming here : {products.length}{" "}
+        Total Products: {products.length}{" "}
       </h1>
 
       <div
