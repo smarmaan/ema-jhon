@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Cart from "../../Cart/Cart";
 import Product from "../Product/Product";
 
 import "./Shop.css";
@@ -15,7 +16,7 @@ const Shop = () => {
     setCart(newCart);
   };
 
-  console.log(cart);
+  // console.log(cart);
   useEffect(() => {
     const loadData = async () => {
       const res = await fetch(
@@ -56,12 +57,9 @@ const Shop = () => {
 
         <div
           id="card-container"
-          className="sticky max-h-96 text-center bg-blue-200 rounded-2xl my-12 shadow-2xl"
+          className="sticky top-0 max-h-96 text-center bg-blue-200 rounded-2xl my-12 shadow-2xl"
         >
-          <h1 className="my-5 text-xl font-bold">Products summary </h1>
-          <p className="text-lg font-bold">
-            Selected Items: <span className="font-extrabold">{cart.length}</span>
-          </p>
+          <Cart cart={cart}></Cart>
         </div>
       </div>
     </div>
