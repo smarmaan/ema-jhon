@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Cart from "../../Cart/Cart";
+import { addToDb, getShoppingCart } from "../../utilities/fakedb";
 import Product from "../Product/Product";
 
 import "./Shop.css";
@@ -10,27 +11,55 @@ const Shop = () => {
   const [cart, setCart] = useState([]);
 
   const handleAddToCart = (product) => {
-    // console.log(product);
+    let newCart = [];
 
-    const newCart = [...cart, product];
+    const exitedProducts = cart.find((pd) => pd.id === product.id);
+
+    if (!exitedProducts) {
+      product.quantity = 1;
+
+      newCart = [...cart, product];
+    } else {
+      exitedProducts.quantity += 1;
+      const remainingProducts = cart.filter((pd) => pd.id !== product.id);
+      newCart = [...remainingProducts, exitedProducts];
+    }
+
     setCart(newCart);
+    addToDb(product.id);
   };
 
-  // console.log(cart);
   useEffect(() => {
     const loadData = async () => {
-      const res = await fetch(
-        `https://raw.githubusercontent.com/ProgrammingHero1/ema-john-resources/main/fakeData/products.json`
-      );
-
+      const res = await fetch(`products.json`);
       const data = await res.json();
-
       setProducts(data);
     };
     loadData();
   }, []);
 
-  //   console.log(products);
+  useEffect(() => {
+    const storedCart = getShoppingCart();
+
+    const savedCart = [];
+    // console.log(storedCart);
+    for (const id in storedCart) {
+      // console.log(storedCart[id]);
+
+      const addedProduct = products.find((product) => product.id === id);
+
+      if (addedProduct) {
+        const quantity = storedCart[id];
+
+        addedProduct.quantity = quantity;
+
+        savedCart.push(addedProduct);
+      }
+    }
+
+    setCart(savedCart);
+  }, [products]);
+
   return (
     <div>
       <h1 className="text-center text-3xl py-12 font-extrabold">
@@ -57,7 +86,7 @@ const Shop = () => {
 
         <div
           id="card-container"
-          className="sticky top-0 max-h-96 text-center bg-blue-200 rounded-2xl my-12 shadow-2xl"
+          className="sticky top-10 right-7 max-h-96 text-center bg-blue-200 rounded-2xl my-12 shadow-2xl"
         >
           <Cart cart={cart}></Cart>
         </div>
